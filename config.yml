@@ -1,5 +1,5 @@
 ---
-base_tv_show_directory: "~/Videos/TV Shows"
+base_tv_show_directory: "/Volumes/Storage/TV Shows"
 cookies:
     americas_test_kitchen: "cookies/atk-cookies.txt"
     177_milk_street: "cookies/177-milk-street-cookies.txt"
