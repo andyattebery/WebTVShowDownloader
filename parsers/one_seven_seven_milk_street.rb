@@ -2,8 +2,10 @@ require './models/models'
 
 class OneSevenSevenMilkStreetParser
 
-    def relative_cookies_file_path
-        "cookies/177-milk-street-cookies.txt"
+    attr_accessor :relative_cookies_file_path
+
+    def initialize(config)
+        @relative_cookies_file_path = config['cookies']['177_milk_street']
     end
 
     def tv_show_source_name

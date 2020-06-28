@@ -2,8 +2,10 @@ require './models/models'
 
 class AmericasTestKitchenParser
 
-    def relative_cookies_file_path
-        "cookies/atk-cookies.txt"
+    attr_accessor :relative_cookies_file_path
+
+    def initialize(config)
+        @relative_cookies_file_path = config['cookies']['americas_test_kitchen']
     end
 
     def tv_show_source_name

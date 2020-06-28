@@ -12,6 +12,7 @@ require 'rubygems'
 require 'json'
 require 'open-uri'
 require 'pathname'
+require 'yaml'
 
 require 'nokogiri'
 require 'parallel'
@@ -19,8 +20,7 @@ require 'parallel'
 require './models/models'
 require './parsers/parsers'
 
-TV_SHOW_DIR = Pathname.new("/Volumes/Storage/TV Shows")
-
+# Arguments
 url = ARGV[0]
 
 if url == nil
@@ -28,16 +28,24 @@ if url == nil
     exit
 end
 
+# Config
+config = YAML.load_file('config.yml')
+
+BASE_TV_SHOW_DIR = Pathname.new(config["base_tv_show_directory"])
+
+# Main
 parser = case url
 when /americastestkitchen/
-    AmericasTestKitchenParser.new
+    AmericasTestKitchenParser.new(config)
 when /177milkstreet/
-    OneSevenSevenMilkStreetParser.new
+    OneSevenSevenMilkStreetParser.new(config)
 end
 
 html_page = Nokogiri::HTML(URI.open(url))
 
 episode_nodes = parser.get_episode_nodes(html_page)
+
+episode_nodes = episode_nodes[0, 1]
 
 cookies_parameter = parser.relative_cookies_file_path != nil ? "--cookies #{parser.relative_cookies_file_path}" : ""
 
@@ -79,7 +87,7 @@ Parallel.each(episode_nodes.to_a) do |node|
     file_name = get_file_name(parser, episode_info, file_resolution, file_extension)
     season_dir_name = "Season #{episode_info.season_number}"
 
-    file_path = TV_SHOW_DIR.join(parser.tv_show_directory_name).join(season_dir_name).join(file_name)
+    file_path = BASE_TV_SHOW_DIR.join(parser.tv_show_directory_name).join(season_dir_name).join(file_name)
 
     if File.exists? file_path
         puts "#{file_path} already exists."
