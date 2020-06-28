@@ -13,4 +13,8 @@ class EpisodeInfo
         @title = title
     end
 
+    def to_s
+        "Season Number: #{@season_number}, Episode Number: #{@episode_number}, Title: #{@title}, URL: #{@url}"
+    end
+
 end

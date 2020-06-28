@@ -3,7 +3,7 @@ require './models/models'
 class AmericasTestKitchenParser
 
     def relative_cookies_file_path
-        "Cookies/atk-cookies.txt"
+        "cookies/atk-cookies.txt"
     end
 
     def tv_show_source_name

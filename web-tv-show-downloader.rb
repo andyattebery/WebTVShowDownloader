@@ -31,13 +31,15 @@ end
 parser = case url
 when /americastestkitchen/
     AmericasTestKitchenParser.new
+when /177milkstreet/
+    OneSevenSevenMilkStreetParser.new
 end
 
 html_page = Nokogiri::HTML(URI.open(url))
 
 episode_nodes = parser.get_episode_nodes(html_page)
 
-episode_nodes = episode_nodes.to_a[20, 1]
+cookies_parameter = parser.relative_cookies_file_path != nil ? "--cookies #{parser.relative_cookies_file_path}" : ""
 
 def get_file_name(parser, episode_info, resolution, extension)
     codec = extension == "mp4" ? "h264" : nil
@@ -55,8 +57,6 @@ Parallel.each(episode_nodes.to_a) do |node|
         puts "Could not get episode info. Exception: #{exception}"
         next
     end
-
-    cookies_parameter = parser.relative_cookies_file_path != nil ? "--cookies #{parser.relative_cookies_file_path}" : ""
 
     file_info_json = %x(youtube-dl #{cookies_parameter} --dump-json #{episode_info.url})
 
@@ -79,7 +79,7 @@ Parallel.each(episode_nodes.to_a) do |node|
     file_name = get_file_name(parser, episode_info, file_resolution, file_extension)
     season_dir_name = "Season #{episode_info.season_number}"
 
-    file_path = TV_SHOW_DIR.join(parsers.tv_show_directory_name).join(season_dir_name).join(file_name)
+    file_path = TV_SHOW_DIR.join(parser.tv_show_directory_name).join(season_dir_name).join(file_name)
 
     if File.exists? file_path
         puts "#{file_path} already exists."
